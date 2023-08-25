@@ -9,19 +9,26 @@ import UIKit
 import SDWebImage
 
 class DetailViewController: UIViewController {
-
+    
     private var viewModel: DetailViewModel
-
+    
     init(detailId: String) {
-        self.viewModel = DetailViewModel()
+        self.viewModel = DetailViewModel(detailId: "")
         viewModel.fetchDetailInfo(id: detailId)
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    private lazy var spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.hidesWhenStopped = true
+        return spinner
+    }()
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -32,7 +39,7 @@ class DetailViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .boldSystemFont(ofSize: 18)
+        label.font = .boldSystemFont(ofSize: 22)
         label.numberOfLines = 0
         return label
     }()
@@ -40,7 +47,7 @@ class DetailViewController: UIViewController {
     private let priceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .boldSystemFont(ofSize: 18)
+        label.font = .boldSystemFont(ofSize: 28)
         return label
     }()
 
@@ -91,9 +98,27 @@ class DetailViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .red //.label
         setupUI()
-        configureDetailData()
+        //        configureDetailData()
+        self.viewModel.viewState.bind { state in
+            switch state {
+            case .loading:
+                self.showActivityIndicator()
+            case .loaded:
+                DispatchQueue.main.async {
+                    self.hideActivityIndicator()
+                    self.configureDetailData()
+                }
+            case .error:
+                DispatchQueue.main.async {
+                    self.hideActivityIndicator()
+                    self.title = state?.message
+                }
+            case nil: break
+            case .some(.none): break
+            }
+        }
     }
 
     private func setupUI() {
@@ -163,4 +188,17 @@ class DetailViewController: UIViewController {
             imageView.sd_setImage(with: imageURL, completed: nil)
         }
     }
+    
+    private func showActivityIndicator() {
+            spinner = UIActivityIndicatorView(style: .large)
+            spinner.center = self.view.center
+            self.view.addSubview(spinner)
+            spinner.startAnimating()
+        }
+
+        private func hideActivityIndicator(){
+            DispatchQueue.main.async {
+                self.spinner.stopAnimating()
+            }
+        }
 }

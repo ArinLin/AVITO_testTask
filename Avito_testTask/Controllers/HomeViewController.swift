@@ -10,12 +10,12 @@ import UIKit
 class HomeViewController: UIViewController {
     typealias ViewModel = HomeViewModel
     private var viewModel: ViewModel
-
+    
     init(viewModel: ViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -30,20 +30,20 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         return collectionView
     }()
-
+    
     private lazy var spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
         spinner.translatesAutoresizingMaskIntoConstraints = false
         spinner.hidesWhenStopped = true
         return spinner
     }()
-
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -54,13 +54,13 @@ extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.advertisements.value?.count ?? 0
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCollectionViewCell.id, for: indexPath) as! HomeCollectionViewCell
-
+        
         guard let item = viewModel.advertisements.value?[indexPath.row] else { return cell }
         cell.configure(with: item)
-
+        
         return cell
     }
 }
@@ -85,8 +85,8 @@ private extension HomeViewController {
     func setUp() {
         self.view.backgroundColor = .white
         self.view.addSubview(collectionView)
-        showActivityIndicator()
-
+        //        showActivityIndicator()
+        
         viewModel.advertisements.bind { [weak self] _ in
             guard let self = self else { return }
             if self.viewModel.advertisements.value?.isEmpty == false {
@@ -96,8 +96,24 @@ private extension HomeViewController {
                 }
             }
         }
+        
+        viewModel.viewState.bind { state in
+            switch state {
+            case .loading:
+                self.showActivityIndicator()
+            case .loaded:
+                break
+            case .error:
+                DispatchQueue.main.async {
+                    self.hideActivityIndicator()
+                    self.title = state?.message
+                }
+            case nil: break
+            case .some(.none): break
+            }
+        }
     }
-
+    
     func setUpContraints() {
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -106,14 +122,14 @@ private extension HomeViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-
+    
     func showActivityIndicator() {
         spinner = UIActivityIndicatorView(style: .large)
         spinner.center = self.view.center
         self.view.addSubview(spinner)
         spinner.startAnimating()
     }
-
+    
     func hideActivityIndicator(){
         spinner.stopAnimating()
     }
