@@ -9,14 +9,12 @@ import Foundation
 
 final class DetailViewModel {
     var detail: Detail? = nil
-
+    
     var service: AdvertisementServiceProtocol = AdvertisementService.advertisementService
     var viewState: Observable<ViewState> = Observable(ViewState.none)
-
-        init(detailId: String) {
-            fetchDetailInfo(id: detailId)
-        }
-
+    
+    init(detailId: String) { }
+    
     func fetchDetailInfo(id: String) {
         viewState.value = .loading
         service.fetchDetailAdvertisement(id: id) { result in

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		840C5AD52A9909C600CE48AD /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C5AD42A9909C600CE48AD /* ViewState.swift */; };
 		8483FCD02A988A15004777FE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8483FCCF2A988A15004777FE /* AppDelegate.swift */; };
 		8483FCD22A988A15004777FE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8483FCD12A988A15004777FE /* SceneDelegate.swift */; };
 		8483FCD42A988A15004777FE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8483FCD32A988A15004777FE /* HomeViewController.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		840C5AD42A9909C600CE48AD /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		8483FCCC2A988A15004777FE /* Avito_testTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Avito_testTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8483FCCF2A988A15004777FE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8483FCD12A988A15004777FE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				8483FCEC2A98B22B004777FE /* Observable.swift */,
+				840C5AD42A9909C600CE48AD /* ViewState.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 			files = (
 				8483FCF12A98B3A4004777FE /* DetailViewController.swift in Sources */,
 				8483FCED2A98B22B004777FE /* Observable.swift in Sources */,
+				840C5AD52A9909C600CE48AD /* ViewState.swift in Sources */,
 				8483FCD42A988A15004777FE /* HomeViewController.swift in Sources */,
 				8483FCF32A98B431004777FE /* DetailViewModel.swift in Sources */,
 				8483FCE92A98AE41004777FE /* HomeViewModel.swift in Sources */,

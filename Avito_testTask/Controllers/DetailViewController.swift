@@ -11,10 +11,11 @@ import SDWebImage
 class DetailViewController: UIViewController {
     
     private var viewModel: DetailViewModel
+    private let detailId: String
     
     init(detailId: String) {
         self.viewModel = DetailViewModel(detailId: "")
-        viewModel.fetchDetailInfo(id: detailId)
+        self.detailId = detailId
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -98,9 +99,8 @@ class DetailViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red //.label
+        view.backgroundColor = .systemBackground
         setupUI()
-        //        configureDetailData()
         self.viewModel.viewState.bind { state in
             switch state {
             case .loading:
@@ -113,12 +113,12 @@ class DetailViewController: UIViewController {
             case .error:
                 DispatchQueue.main.async {
                     self.hideActivityIndicator()
-                    self.title = state?.message
+                    //self.title = state?.message
                 }
-            case nil: break
-            case .some(.none): break
+            default: break
             }
         }
+        viewModel.fetchDetailInfo(id: detailId)
     }
 
     private func setupUI() {
