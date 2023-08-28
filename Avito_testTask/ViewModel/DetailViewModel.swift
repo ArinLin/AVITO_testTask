@@ -8,22 +8,17 @@
 import Foundation
 
 final class DetailViewModel {
-    var detail: Detail? = nil
-    
     var service: AdvertisementServiceProtocol = AdvertisementService.advertisementService
-    var viewState: Observable<ViewState> = Observable(ViewState.none)
-    
-    init(detailId: String) { }
+    var viewState: Observable<ViewState<Detail>> = Observable(ViewState.none)
     
     func fetchDetailInfo(id: String) {
         viewState.value = .loading
         service.fetchDetailAdvertisement(id: id) { result in
             switch result {
             case .success(let data):
-                self.detail = data
-                self.viewState.value = .loaded
+                self.viewState.value = .loaded(data)
             case .failure(let error):
-                self.viewState.value = .error
+                self.viewState.value = .error(error.localizedDescription)
             }
         }
     }

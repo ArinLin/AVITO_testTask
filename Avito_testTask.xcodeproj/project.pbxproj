@@ -22,6 +22,7 @@
 		8483FCF32A98B431004777FE /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8483FCF22A98B431004777FE /* DetailViewModel.swift */; };
 		8483FCF62A98B4A1004777FE /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 8483FCF52A98B4A1004777FE /* SDWebImage */; };
 		8483FCF82A98B4D7004777FE /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8483FCF72A98B4D7004777FE /* HomeCollectionViewCell.swift */; };
+		84C0E95E2A9C97FB00F84894 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C0E95D2A9C97FB00F84894 /* DetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		8483FCF02A98B3A4004777FE /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		8483FCF22A98B431004777FE /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		8483FCF72A98B4D7004777FE /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
+		84C0E95D2A9C97FB00F84894 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				8483FCFA2A98C488004777FE /* Components */,
+				84C0E95D2A9C97FB00F84894 /* DetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				8483FCF32A98B431004777FE /* DetailViewModel.swift in Sources */,
 				8483FCE92A98AE41004777FE /* HomeViewModel.swift in Sources */,
 				8483FCE62A988C0D004777FE /* Details.swift in Sources */,
+				84C0E95E2A9C97FB00F84894 /* DetailView.swift in Sources */,
 				8483FCF82A98B4D7004777FE /* HomeCollectionViewCell.swift in Sources */,
 				8483FCEB2A98AE7E004777FE /* AdvertisementService.swift in Sources */,
 				8483FCE42A988BE0004777FE /* Advertisement.swift in Sources */,

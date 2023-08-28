@@ -42,6 +42,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUp()
+        viewModel.fetchAdvertisements()
     }
     
     required init?(coder: NSCoder) {
@@ -52,13 +53,13 @@ class HomeViewController: UIViewController {
 // MARK: - Collection Ext
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.advertisements.value?.count ?? 0
+        return viewModel.viewState.value?.data?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCollectionViewCell.id, for: indexPath) as! HomeCollectionViewCell
         
-        guard let item = viewModel.advertisements.value?[indexPath.row] else { return cell }
+        guard let item = viewModel.viewState.value?.data?[indexPath.row] else { return cell }
         cell.configure(with: item)
         
         return cell
@@ -74,7 +75,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let item = viewModel.advertisements.value?[indexPath.row] else { return }
+        guard let item = viewModel.viewState.value?.data?[indexPath.row] else { return }
         let detailViewController = DetailViewController(detailId: item.id)
         navigationController?.pushViewController(detailViewController, animated: true)
     }
@@ -85,31 +86,23 @@ private extension HomeViewController {
     func setUp() {
         self.view.backgroundColor = .white
         self.view.addSubview(collectionView)
-        //        showActivityIndicator()
-        
-        viewModel.advertisements.bind { [weak self] _ in
-            guard let self = self else { return }
-            if self.viewModel.advertisements.value?.isEmpty == false {
-                DispatchQueue.main.async {
-                    self.hideActivityIndicator()
-                    self.collectionView.reloadData()
-                }
-            }
-        }
         
         viewModel.viewState.bind { state in
             switch state {
             case .loading:
                 self.showActivityIndicator()
             case .loaded:
+                DispatchQueue.main.async {
+                    self.hideActivityIndicator()
+                    self.collectionView.reloadData()
+                }
                 break
             case .error:
                 DispatchQueue.main.async {
                     self.hideActivityIndicator()
                     self.title = state?.message
                 }
-            case nil: break
-            case .some(.none): break
+            default: break
             }
         }
     }

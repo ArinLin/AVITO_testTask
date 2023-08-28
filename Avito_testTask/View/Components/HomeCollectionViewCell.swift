@@ -9,8 +9,10 @@ import UIKit
 import SDWebImage
 
 class HomeCollectionViewCell: UICollectionViewCell {
+    // MARK: - ID
     static var id: String {"\(Self.self)"}
     
+    // MARK: - Variables
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -45,6 +47,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
         return label
     }()
 
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -55,6 +58,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
         setupUI()
     }
 
+    // MARK: - UI setup
     private func setupUI() {
         contentView.addSubview(imageView)
         contentView.addSubview(titleLabel)
@@ -90,6 +94,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
         ])
     }
 
+    // MARK: - Cell config
     func configure(with item: Advertisement) {
         titleLabel.text = item.title
         priceLabel.text = item.price

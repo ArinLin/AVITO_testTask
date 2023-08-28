@@ -7,22 +7,31 @@
 
 import Foundation
 
-enum ViewState: String {
+enum ViewState<T> {
     case none
-    case error
+    case error(String)
     case loading
-    case loaded
+    case loaded(T)
 
     var message: String {
         switch self {
         case .none:
-            return "unknown"
+            return "неизвестная ошибка"
         case .error:
             return "не удалось загрузить"
         case .loading:
             return "загружается"
         case .loaded:
             return "загрузилось"
+        }
+    }
+    
+    var data: T? {
+        switch self {
+        case .loaded(let data):
+            return data
+        default:
+            return nil
         }
     }
 }

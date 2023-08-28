@@ -13,8 +13,9 @@ class DetailViewController: UIViewController {
     private var viewModel: DetailViewModel
     private let detailId: String
     
+    // MARK: - Init
     init(detailId: String) {
-        self.viewModel = DetailViewModel(detailId: "")
+        self.viewModel = DetailViewModel()
         self.detailId = detailId
         super.init(nibName: nil, bundle: nil)
     }
@@ -30,175 +31,94 @@ class DetailViewController: UIViewController {
         return spinner
     }()
     
-    private let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
-        return imageView
+    private let scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.backgroundColor = .systemBackground
+        return scroll
     }()
-
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .boldSystemFont(ofSize: 22)
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private let priceLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .boldSystemFont(ofSize: 28)
-        return label
-    }()
-
-    private let locationLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16)
-        return label
-    }()
-
-    private let createdDateLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .gray
-        return label
-    }()
-
-    private let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16)
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private let emailLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16)
-        return label
-    }()
-
-    private let phoneNumberLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16)
-        return label
-    }()
-
-    private let addressLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16)
-        return label
-    }()
-
+    
+    private let detailView = DetailView()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupUI()
         self.viewModel.viewState.bind { state in
-            switch state {
-            case .loading:
-                self.showActivityIndicator()
-            case .loaded:
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                switch state {
+                case .loading:
+                    self.showActivityIndicator()
+                case .loaded:
                     self.hideActivityIndicator()
                     self.configureDetailData()
-                }
-            case .error:
-                DispatchQueue.main.async {
+                case .error(let message):
                     self.hideActivityIndicator()
-                    //self.title = state?.message
+                    self.displayErrorAlert(message: state?.message ?? message)
+                default: break
                 }
-            default: break
             }
         }
         viewModel.fetchDetailInfo(id: detailId)
     }
-
+    
     private func setupUI() {
-        view.addSubview(imageView)
-        view.addSubview(titleLabel)
-        view.addSubview(priceLabel)
-        view.addSubview(locationLabel)
-        view.addSubview(createdDateLabel)
-        view.addSubview(descriptionLabel)
-        view.addSubview(emailLabel)
-        view.addSubview(phoneNumberLabel)
-        view.addSubview(addressLabel)
-
-        let padding: CGFloat = 16.0
-
+        view.addSubview(scrollView)
+        scrollView.addSubview(detailView)
+        
+        detailView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            imageView.heightAnchor.constraint(equalToConstant: 400.0),
-
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0),
-            titleLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
-
-            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8.0),
-            priceLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-
-            locationLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 8.0),
-            locationLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-
-            createdDateLabel.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 8.0),
-            createdDateLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-
-            descriptionLabel.topAnchor.constraint(equalTo: createdDateLabel.bottomAnchor, constant: padding),
-            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-
-            emailLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: padding),
-            emailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-
-            phoneNumberLabel.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 8.0),
-            phoneNumberLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-
-            addressLabel.topAnchor.constraint(equalTo: phoneNumberLabel.bottomAnchor, constant: 8.0),
-            addressLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            addressLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -padding)
+            scrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
+            scrollView.heightAnchor.constraint(equalTo: view.layoutMarginsGuide.heightAnchor),
+            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            
+            detailView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            detailView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            detailView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            detailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            detailView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
         ])
     }
-
-
+    
     private func configureDetailData() {
-        guard let detail = viewModel.detail else {
+        guard let detail = viewModel.viewState.value?.data else {
             return
         }
-
-        titleLabel.text = detail.title
-        priceLabel.text = detail.price
-        locationLabel.text = detail.location
-        createdDateLabel.text = detail.createdDate
-        descriptionLabel.text = detail.description
-        emailLabel.text = detail.email
-        phoneNumberLabel.text = detail.phoneNumber
-        addressLabel.text = detail.address
-
+        
+        detailView.titleLabel.text = detail.title
+        detailView.priceLabel.text = detail.price
+        detailView.locationLabel.text = detail.location
+        detailView.createdDateLabel.text = detail.createdDate
+        detailView.descriptionLabel.text = detail.description
+        detailView.emailLabel.text = detail.email
+        detailView.phoneNumberLabel.text = detail.phoneNumber
+        detailView.addressLabel.text = detail.address
+        
         if let imageURL = URL(string: detail.imageURL) {
-            imageView.sd_setImage(with: imageURL, completed: nil)
+            detailView.imageView.sd_setImage(with: imageURL, completed: nil)
         }
     }
     
+    private func displayErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
+    }
+    
     private func showActivityIndicator() {
-            spinner = UIActivityIndicatorView(style: .large)
-            spinner.center = self.view.center
-            self.view.addSubview(spinner)
-            spinner.startAnimating()
-        }
-
-        private func hideActivityIndicator(){
-            DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-            }
-        }
+        spinner = UIActivityIndicatorView(style: .large)
+        spinner.center = self.view.center
+        self.view.addSubview(spinner)
+        spinner.startAnimating()
+    }
+    
+    private func hideActivityIndicator(){
+        self.spinner.stopAnimating()
+    }
 }
